@@ -12,22 +12,28 @@ import javax.swing.ImageIcon;
 
 import study_program.client.ui.swing.ClientFrame;
 
+/*
+ * The absolute maximum datagram packet size is 65507, The maximum IP packet
+ * size of 65535 minus 20 bytes for the IP header and 8 bytes for the UDP
+ * header.
+ */
 public class ImageReceiver {
 	private static int HEADER_SIZE = 8;
 	private static int SESSION_START = 128;
 	private static int SESSION_END = 64;
 
-	/*
-	 * The absolute maximum datagram packet size is 65507, The maximum IP packet
-	 * size of 65535 minus 20 bytes for the IP header and 8 bytes for the UDP
-	 * header.
-	 */
 	private static int DATAGRAM_MAX_SIZE = 65507;
 
-	private static String IP_ADDRESS = "225.4.5.6";
-	private static int PORT = 4444;
+	private String ipAddress;
+	private int port;
 	private ClientFrame frame;
 	private boolean fullScreen = false;
+
+	public ImageReceiver(String ipAddress, int port) {
+		super();
+		this.ipAddress = ipAddress;
+		this.port = port;
+	}
 
 	public void receiveImages() {
 		boolean debug = false;
@@ -35,8 +41,8 @@ public class ImageReceiver {
 		MulticastSocket ms = null;
 
 		try {
-			ia = InetAddress.getByName(IP_ADDRESS);
-			ms = new MulticastSocket(PORT);
+			ia = InetAddress.getByName(ipAddress);
+			ms = new MulticastSocket(port);
 			ms.joinGroup(ia);
 
 			int currentSession = -1;
@@ -124,15 +130,15 @@ public class ImageReceiver {
 		frame.setIconForNormalWindowLabel(normalIcon);
 		ImageIcon fullScrIcon = new ImageIcon(image);
 		frame.setIconForFullScrWindowLabel(fullScrIcon);
-		//frame.pack();
+		// frame.pack();
 	}
 
 	public void handleCommandLineArgs(String[] args) {
 		switch (args.length) {
 		case 2:
-			IP_ADDRESS = args[1];
+			ipAddress = args[1];
 		case 1:
-			PORT = Integer.parseInt(args[0]);
+			port = Integer.parseInt(args[0]);
 		}
 	}
 

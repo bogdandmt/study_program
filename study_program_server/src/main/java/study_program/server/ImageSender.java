@@ -41,9 +41,15 @@ public class ImageSender {
 
 	public static int COLOUR_OUTPUT = BufferedImage.TYPE_INT_RGB;
 
-	public static String IP_ADDRESS = "225.4.5.6";
-	public static int PORT = 4444;
+	public String ipAddress;
+	public int port;
 	public static boolean SHOW_MOUSEPOINTER = true;
+
+	public ImageSender(String ipAddress, int port) {
+		super();
+		this.ipAddress = ipAddress;
+		this.port = port;
+	}
 
 	public static BufferedImage getScreenshot() throws AWTException, ImageFormatException, IOException {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -103,16 +109,16 @@ public class ImageSender {
 	public void handleCommandLineArgs(String[] args) {
 		switch (args.length) {
 		case 3:
-			IP_ADDRESS = args[2];
+			ipAddress = args[2];
 		case 2:
-			PORT = Integer.parseInt(args[1]);
+			port = Integer.parseInt(args[1]);
 		case 1:
 			SHOW_MOUSEPOINTER = Integer.parseInt(args[0]) == 1 ? true : false;
 		}
 	}
 
 	public void sendImages() {
-		ImageSender sender = new ImageSender();
+		ImageSender sender = new ImageSender("225.4.5.6", 4444);
 		int sessionNumber = 0;
 
 		try {
@@ -157,7 +163,7 @@ public class ImageSender {
 					/* Copy current slice to byte array */
 					System.arraycopy(imageByteArray, i * DATAGRAM_MAX_SIZE, data, HEADER_SIZE, size);
 					/* Send multicast packet */
-					sender.sendImage(data, IP_ADDRESS, PORT);
+					sender.sendImage(data, ipAddress, port);
 
 					/* Leave loop if last slice has been sent */
 					if ((flags & SESSION_END) == SESSION_END)

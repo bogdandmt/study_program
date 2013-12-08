@@ -46,7 +46,7 @@ public class ClientStartPoint {
 	public static void main(String[] args) throws IOException {
 		// connectToAndQueryDatabase(null, null);
 
-		ImageReceiver receiver = new ImageReceiver();
+		ImageReceiver receiver = new ImageReceiver("225.4.5.6", 4444);
 		ClientFrame frame = new ClientFrame(receiver);
 		receiver.setFrame(frame);
 		frame.setVisible(true);
