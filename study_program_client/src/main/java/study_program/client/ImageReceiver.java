@@ -124,7 +124,7 @@ public class ImageReceiver {
 		frame.setIconForNormalWindowLabel(normalIcon);
 		ImageIcon fullScrIcon = new ImageIcon(image);
 		frame.setIconForFullScrWindowLabel(fullScrIcon);
-		frame.pack();
+		//frame.pack();
 	}
 
 	public void handleCommandLineArgs(String[] args) {
