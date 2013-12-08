@@ -1,4 +1,4 @@
-package study_program.client;
+package study_program.interfaces;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -10,14 +10,12 @@ import java.net.MulticastSocket;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import study_program.client.ui.swing.ClientFrame;
-
 /*
  * The absolute maximum datagram packet size is 65507, The maximum IP packet
  * size of 65535 minus 20 bytes for the IP header and 8 bytes for the UDP
  * header.
  */
-public class ImageReceiver {
+public class ImageReceiver implements Runnable {
 	private static int HEADER_SIZE = 8;
 	private static int SESSION_START = 128;
 	private static int SESSION_END = 64;
@@ -26,7 +24,7 @@ public class ImageReceiver {
 
 	private String ipAddress;
 	private int port;
-	private ClientFrame frame;
+	private ImageIconFrame imgIconframe;
 	private boolean fullScreen = false;
 
 	public ImageReceiver(String ipAddress, int port) {
@@ -37,13 +35,13 @@ public class ImageReceiver {
 
 	public void receiveImages() {
 		boolean debug = false;
-		InetAddress ia = null;
-		MulticastSocket ms = null;
+		InetAddress iAddress = null;
+		MulticastSocket mSocket = null;
 
 		try {
-			ia = InetAddress.getByName(ipAddress);
-			ms = new MulticastSocket(port);
-			ms.joinGroup(ia);
+			iAddress = InetAddress.getByName(ipAddress);
+			mSocket = new MulticastSocket(port);
+			mSocket.joinGroup(iAddress);
 
 			int currentSession = -1;
 			int storedSlicesCount = 0;
@@ -57,7 +55,7 @@ public class ImageReceiver {
 			while (true) {
 				/* Receive a UDP packet */
 				DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-				ms.receive(datagramPacket);
+				mSocket.receive(datagramPacket);
 				byte[] data = datagramPacket.getData();
 
 				/* Read header infomation */
@@ -112,10 +110,10 @@ public class ImageReceiver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (ms != null) {
+			if (mSocket != null) {
 				try {
-					ms.leaveGroup(ia);
-					ms.close();
+					mSocket.leaveGroup(iAddress);
+					mSocket.close();
 				} catch (IOException e) {
 				}
 			}
@@ -127,9 +125,9 @@ public class ImageReceiver {
 		BufferedImage image;
 		image = ImageIO.read(bis);
 		ImageIcon normalIcon = new ImageIcon(image);
-		frame.setIconForNormalWindowLabel(normalIcon);
+		imgIconframe.setIconForNormalWindowLabel(normalIcon);
 		ImageIcon fullScrIcon = new ImageIcon(image);
-		frame.setIconForFullScrWindowLabel(fullScrIcon);
+		imgIconframe.setIconForFullScrWindowLabel(fullScrIcon);
 		// frame.pack();
 	}
 
@@ -150,8 +148,13 @@ public class ImageReceiver {
 		this.fullScreen = fullScreen;
 	}
 
-	public void setFrame(ClientFrame frame) {
-		this.frame = frame;
+	public void setFrame(ImageIconFrame frame) {
+		this.imgIconframe = frame;
+	}
+
+	@Override
+	public void run() {
+		receiveImages();
 	}
 
 }

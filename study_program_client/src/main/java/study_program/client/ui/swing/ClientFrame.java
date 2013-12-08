@@ -16,9 +16,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JWindow;
 
-import study_program.client.ImageReceiver;
+import study_program.interfaces.ImageIconFrame;
+import study_program.interfaces.ImageReceiver;
 
-public class ClientFrame extends JFrame implements KeyListener, ActionListener {
+public class ClientFrame extends JFrame implements KeyListener, ActionListener, ImageIconFrame {
 
 	private static final long serialVersionUID = 1L;
 	private ImageReceiver imageReceiver;
@@ -61,10 +62,12 @@ public class ClientFrame extends JFrame implements KeyListener, ActionListener {
 		return menuBar;
 	}
 
+	@Override
 	public void setIconForNormalWindowLabel(ImageIcon icon) {
 		normalWindowLabel.setIcon(icon);
 	}
 
+	@Override
 	public void setIconForFullScrWindowLabel(ImageIcon icon) {
 		fullScrWindowLabel.setIcon(icon);
 	}
@@ -98,5 +101,4 @@ public class ClientFrame extends JFrame implements KeyListener, ActionListener {
 			break;
 		}
 	}
-
 }

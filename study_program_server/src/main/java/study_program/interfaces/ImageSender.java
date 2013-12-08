@@ -1,4 +1,4 @@
-package study_program.server;
+package study_program.interfaces;
 
 import java.awt.AWTException;
 import java.awt.Color;
@@ -14,8 +14,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 import com.sun.image.codec.jpeg.ImageFormatException;
 
 @SuppressWarnings("restriction")
-public class ImageSender {
+public class ImageSender implements Runnable {
 
 	public static int HEADER_SIZE = 8;
 	public static int MAX_PACKETS = 255;
@@ -73,33 +73,33 @@ public class ImageSender {
 		return baos.toByteArray();
 	}
 
-	private boolean sendImage(byte[] imageData, String multicastAddress, int port) {
-		InetAddress ia;
+	private boolean sendImage(byte[] imageData) {
+		InetAddress inetAddress;
 
 		boolean result = false;
-		int ttl = 2;
+//		int ttl = 2;
 
 		try {
-			ia = InetAddress.getByName(multicastAddress);
+			inetAddress = InetAddress.getByName(ipAddress);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return result;
 		}
 
-		MulticastSocket ms = null;
+		DatagramSocket datagramScocket = null;
 
 		try {
-			ms = new MulticastSocket();
-			ms.setTimeToLive(ttl);
-			DatagramPacket dp = new DatagramPacket(imageData, imageData.length, ia, port);
-			ms.send(dp);
+			datagramScocket = new DatagramSocket();
+			//datagramScocket.setTimeToLive(ttl);
+			DatagramPacket dp = new DatagramPacket(imageData, imageData.length, inetAddress, port);
+			datagramScocket.send(dp);
 			result = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			result = false;
 		} finally {
-			if (ms != null) {
-				ms.close();
+			if (datagramScocket != null) {
+				datagramScocket.close();
 			}
 		}
 
@@ -118,7 +118,7 @@ public class ImageSender {
 	}
 
 	public void sendImages() {
-		ImageSender sender = new ImageSender("225.4.5.6", 4444);
+		//ImageSender sender = new ImageSender(ipAddress, port);
 		int sessionNumber = 0;
 
 		try {
@@ -163,7 +163,7 @@ public class ImageSender {
 					/* Copy current slice to byte array */
 					System.arraycopy(imageByteArray, i * DATAGRAM_MAX_SIZE, data, HEADER_SIZE, size);
 					/* Send multicast packet */
-					sender.sendImage(data, ipAddress, port);
+					sendImage(data);
 
 					/* Leave loop if last slice has been sent */
 					if ((flags & SESSION_END) == SESSION_END)
@@ -194,5 +194,10 @@ public class ImageSender {
 		g2d.setColor(Color.red);
 		g2d.fill(polygon2);
 		g2d.dispose();
+	}
+
+	@Override
+	public void run() {
+		sendImages();
 	}
 }

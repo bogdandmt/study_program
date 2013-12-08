@@ -5,16 +5,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-public class ServerFrame extends JFrame implements ActionListener {
+import study_program.interfaces.ImageIconFrame;
+
+public class ServerFrame extends JFrame implements ActionListener, ImageIconFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JMenuBar menuBar;
+	private JLabel normalWindowLabel;
 
 	public ServerFrame() {
 		super();
@@ -25,9 +29,11 @@ public class ServerFrame extends JFrame implements ActionListener {
 		add(label);
 		menuBar = createMenuBar();
 		setJMenuBar(menuBar);
+		normalWindowLabel = new JLabel();
+		add(normalWindowLabel);
 		pack();
 	}
-	
+
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar;
 		JMenu menuFile;
@@ -50,6 +56,16 @@ public class ServerFrame extends JFrame implements ActionListener {
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			break;
 		}
+	}
+
+	@Override
+	public void setIconForNormalWindowLabel(ImageIcon icon) {
+		normalWindowLabel.setIcon(icon);
+	}
+
+	@Override
+	public void setIconForFullScrWindowLabel(ImageIcon fullScrIcon) {
+		// TODO Auto-generated method stub
 	}
 
 }

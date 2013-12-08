@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import study_program.client.ui.swing.ClientFrame;
+import study_program.interfaces.ImageReceiver;
+import study_program.interfaces.ImageSender;
 
 public class ClientStartPoint {
 
@@ -51,6 +53,12 @@ public class ClientStartPoint {
 		receiver.setFrame(frame);
 		frame.setVisible(true);
 		receiver.handleCommandLineArgs(args);
-		receiver.receiveImages();
+		Thread receiverThread = new Thread(receiver);
+		receiverThread.start();
+		
+		ImageSender imgSender = new ImageSender("225.4.5.6", 5555);
+		imgSender.handleCommandLineArgs(args);
+		Thread senderThread = new Thread(imgSender);
+		senderThread.start();
 	}
 }
