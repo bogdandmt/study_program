@@ -6,32 +6,49 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.UIManager;
 
 import study_program.interfaces.ImageIconFrame;
 
-public class ServerFrame extends JFrame implements ActionListener, ImageIconFrame {
+public class ServerFrame extends JFrame implements ActionListener,
+		ImageIconFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JMenuBar menuBar;
 	private JLabel normalWindowLabel;
+	private JDesktopPane desktopPane = new JDesktopPane();
 
 	public ServerFrame() {
 		super();
+		try {
+			UIManager
+					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		setTitle("Study Program - Server");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(400, 300);
 		JLabel label = new JLabel();
 		label.setText("Multicasting screenshots...");
-		add(label);
+		// add(label);
 		menuBar = createMenuBar();
 		setJMenuBar(menuBar);
 		normalWindowLabel = new JLabel();
-		add(normalWindowLabel);
-		pack();
+		JInternalFrame labelFrame = new JInternalFrame("Image", true, true,
+				true);
+		labelFrame.setSize(200, 100);
+		labelFrame.setVisible(true);
+		labelFrame.add(normalWindowLabel);
+		desktopPane.add(labelFrame);
+		setContentPane(desktopPane);
 	}
 
 	private JMenuBar createMenuBar() {
