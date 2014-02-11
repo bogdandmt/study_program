@@ -1,6 +1,7 @@
 package study_program.client;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import study_program.client.ui.swing.ClientFrame;
 import study_program.common.ImageReceiver;
@@ -23,5 +24,8 @@ public class ClientStartPoint {
 		imgSender.handleCommandLineArgs(args);
 		Thread senderThread = new Thread(imgSender);
 		senderThread.start();
+		
+//		InetAddress a = InetAddress.getLocalHost();
+//		System.out.println(a.getHostAddress());
 	}
 }
