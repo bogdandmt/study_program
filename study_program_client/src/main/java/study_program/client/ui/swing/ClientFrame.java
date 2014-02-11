@@ -16,10 +16,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JWindow;
 
-import study_program.interfaces.ImageIconFrame;
-import study_program.interfaces.ImageReceiver;
+import study_program.common.ImageIconFrame;
+import study_program.common.ImageReceiver;
 
-public class ClientFrame extends JFrame implements KeyListener, ActionListener, ImageIconFrame {
+public class ClientFrame extends JFrame implements ImageIconFrame {
 
 	private static final long serialVersionUID = 1L;
 	private ImageReceiver imageReceiver;
@@ -31,24 +31,31 @@ public class ClientFrame extends JFrame implements KeyListener, ActionListener, 
 	public ClientFrame(ImageReceiver imageReceiver) {
 		super();
 		this.imageReceiver = imageReceiver;
+		init();
+	}
+
+	private void init() {
 		setTitle("Study Program - Client");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		normalWindowLabel = new JLabel();
-		add(normalWindowLabel);
 		setSize(400, 200);
 
-		addKeyListener(this);
+		ClientFrameListener listener = new ClientFrameListener();
+
+		normalWindowLabel = new JLabel();
+		add(normalWindowLabel);
 
 		fullScrWindowLabel = new JLabel();
 		fullscreenWindow = new JWindow();
 		fullscreenWindow.getContentPane().add(fullScrWindowLabel);
-		fullscreenWindow.addKeyListener(this);
+		fullscreenWindow.addKeyListener(listener);
 
-		menuBar = createMenuBar();
+		menuBar = createMenuBar(listener);
 		setJMenuBar(menuBar);
+
+		addKeyListener(listener);
 	}
 
-	private JMenuBar createMenuBar() {
+	private JMenuBar createMenuBar(ClientFrameListener listener) {
 		JMenuBar menuBar;
 		JMenu menuFile;
 		JMenuItem menuItemExit;
@@ -57,7 +64,7 @@ public class ClientFrame extends JFrame implements KeyListener, ActionListener, 
 		menuFile.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(menuFile);
 		menuItemExit = new JMenuItem("Exit", KeyEvent.VK_X);
-		menuItemExit.addActionListener(this);
+		menuItemExit.addActionListener(listener);
 		menuFile.add(menuItemExit);
 		return menuBar;
 	}
@@ -72,33 +79,40 @@ public class ClientFrame extends JFrame implements KeyListener, ActionListener, 
 		fullScrWindowLabel.setIcon(icon);
 	}
 
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			if (imageReceiver.isFullScreen()) {
-				device.setFullScreenWindow(null);
-				fullscreenWindow.setVisible(false);
-				imageReceiver.setFullScreen(false);
-			} else {
-				device.setFullScreenWindow(fullscreenWindow);
-				fullscreenWindow.setVisible(true);
-				imageReceiver.setFullScreen(true);
+	private class ClientFrameListener implements ActionListener, KeyListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JMenuItem source = (JMenuItem) (e.getSource());
+			switch (source.getText()) {
+			case "Exit":
+				dispatchEvent(new WindowEvent(ClientFrame.this, WindowEvent.WINDOW_CLOSING));
+				break;
 			}
 		}
-	}
 
-	public void keyReleased(KeyEvent arg0) {
-	}
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+				if (imageReceiver.isFullScreen()) {
+					device.setFullScreenWindow(null);
+					fullscreenWindow.setVisible(false);
+					imageReceiver.setFullScreen(false);
+				} else {
+					device.setFullScreenWindow(fullscreenWindow);
+					fullscreenWindow.setVisible(true);
+					imageReceiver.setFullScreen(true);
+				}
+			}
+		}
 
-	public void keyTyped(KeyEvent arg0) {
-	}
+		@Override
+		public void keyReleased(KeyEvent e) {
+		}
 
-	public void actionPerformed(ActionEvent e) {
-		JMenuItem source = (JMenuItem) (e.getSource());
-		switch (source.getText()) {
-		case "Exit":
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			break;
+		@Override
+		public void keyTyped(KeyEvent e) {
 		}
 	}
 }

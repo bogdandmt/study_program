@@ -15,7 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 
-import study_program.interfaces.ImageIconFrame;
+import study_program.common.ImageIconFrame;
 
 public class ServerFrame extends JFrame implements ActionListener,
 		ImageIconFrame {

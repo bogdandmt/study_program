@@ -1,4 +1,4 @@
-package study_program.interfaces;
+package study_program.common;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

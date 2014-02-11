@@ -2,8 +2,8 @@ package study_program.server;
 
 import java.io.IOException;
 
-import study_program.interfaces.ImageReceiver;
-import study_program.interfaces.ImageSender;
+import study_program.common.ImageReceiver;
+import study_program.common.ImageSender;
 import study_program.server.ui.swing.ServerFrame;
 
 public class ServerStartPoint {
