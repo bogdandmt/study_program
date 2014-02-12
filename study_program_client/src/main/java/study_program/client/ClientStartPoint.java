@@ -1,14 +1,12 @@
 package study_program.client;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 import study_program.client.ui.swing.ClientFrame;
 import study_program.common.ImageReceiver;
 import study_program.common.ImageSender;
 
 public class ClientStartPoint {
-
 
 	public static void main(String[] args) throws IOException {
 
@@ -19,13 +17,10 @@ public class ClientStartPoint {
 		receiver.handleCommandLineArgs(args);
 		Thread receiverThread = new Thread(receiver);
 		receiverThread.start();
-		
+
 		ImageSender imgSender = new ImageSender("225.4.5.6", 5555);
 		imgSender.handleCommandLineArgs(args);
 		Thread senderThread = new Thread(imgSender);
 		senderThread.start();
-		
-//		InetAddress a = InetAddress.getLocalHost();
-//		System.out.println(a.getHostAddress());
 	}
 }

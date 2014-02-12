@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -16,7 +17,7 @@ import javax.swing.ImageIcon;
  * header.
  */
 public class ImageReceiver implements Runnable {
-	private static int HEADER_SIZE = 8;
+	private static int HEADER_SIZE = 12; //8
 	private static int SESSION_START = 128;
 	private static int SESSION_END = 64;
 
@@ -70,6 +71,10 @@ public class ImageReceiver implements Runnable {
 				// the
 				// sign
 				// bit
+				
+				byte[] rawSenderIp = Arrays.copyOfRange(data, 8, 12);
+				InetAddress senderAddress = InetAddress.getByAddress(rawSenderIp);
+				System.out.println(senderAddress);
 
 				if (debug) {
 					System.out.println("------------- PACKET -------------");

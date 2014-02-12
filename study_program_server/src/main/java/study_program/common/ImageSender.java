@@ -25,7 +25,7 @@ import com.sun.image.codec.jpeg.ImageFormatException;
 @SuppressWarnings("restriction")
 public class ImageSender implements Runnable {
 
-	public static int HEADER_SIZE = 8;
+	public static int HEADER_SIZE = 12;// 8
 	public static int MAX_PACKETS = 255;
 	public static int SESSION_START = 128;
 	public static int SESSION_END = 64;
@@ -77,7 +77,7 @@ public class ImageSender implements Runnable {
 		InetAddress inetAddress;
 
 		boolean result = false;
-//		int ttl = 2;
+		// int ttl = 2;
 
 		try {
 			inetAddress = InetAddress.getByName(ipAddress);
@@ -90,7 +90,7 @@ public class ImageSender implements Runnable {
 
 		try {
 			datagramScocket = new DatagramSocket();
-			//datagramScocket.setTimeToLive(ttl);
+			// datagramScocket.setTimeToLive(ttl);
 			DatagramPacket dp = new DatagramPacket(imageData, imageData.length, inetAddress, port);
 			datagramScocket.send(dp);
 			result = true;
@@ -118,7 +118,7 @@ public class ImageSender implements Runnable {
 	}
 
 	public void sendImages() {
-		//ImageSender sender = new ImageSender(ipAddress, port);
+		// ImageSender sender = new ImageSender(ipAddress, port);
 		int sessionNumber = 0;
 
 		try {
@@ -160,6 +160,12 @@ public class ImageSender implements Runnable {
 					data[6] = (byte) (size >> 8);
 					data[7] = (byte) size;
 
+					byte[] rawIp = getLocalIpAddress();
+					data[8] = rawIp[0];
+					data[9] = rawIp[1];
+					data[10] = rawIp[2];
+					data[11] = rawIp[3];
+
 					/* Copy current slice to byte array */
 					System.arraycopy(imageByteArray, i * DATAGRAM_MAX_SIZE, data, HEADER_SIZE, size);
 					/* Send multicast packet */
@@ -174,6 +180,18 @@ public class ImageSender implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private byte[] getLocalIpAddress() {
+		byte[] result = null;
+		InetAddress localAddress;
+		try {
+			localAddress = InetAddress.getLocalHost();
+			result = localAddress.getAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	private static void drawMousePointer(BufferedImage image) {
