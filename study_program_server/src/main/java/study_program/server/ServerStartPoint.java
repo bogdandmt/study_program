@@ -20,6 +20,7 @@ public class ServerStartPoint {
 		receiver.setFrame(frame);
 		Thread receiverThread = new Thread(receiver);
 		receiverThread.start();
+		
 	}
 
 }
